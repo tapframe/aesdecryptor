@@ -1,10 +1,11 @@
-# Vidnest Decryption Server
+# Vidnest & Vidrock Decryption Server
 
-A standalone Express.js server that handles AES-GCM decryption for Vidnest providers, making them compatible with React Native environments.
+A standalone Express.js server that handles AES-GCM and AES-CBC decryption for Vidnest and Vidrock providers, making them compatible with React Native environments.
 
 ## Features
 
 - **AES-GCM Decryption**: Handles Vidnest's encrypted API responses
+- **AES-CBC Decryption**: Handles Vidrock's encrypted API responses
 - **React Native Compatible**: Replaces Web Crypto API calls with HTTP requests
 - **Express.js Server**: Lightweight and easy to deploy
 - **CORS Enabled**: Ready for cross-origin requests
@@ -44,7 +45,8 @@ GET /health
 ```json
 {
   "status": "OK",
-  "message": "Vidnest Decryption Server is running",
+  "message": "Vidnest & Vidrock Decryption Server is running",
+  "supportedMethods": ["aes-gcm", "aes-cbc"],
   "timestamp": "2024-01-15T10:30:00.000Z"
 }
 ```
@@ -56,15 +58,22 @@ Content-Type: application/json
 
 {
   "encryptedData": "base64-encoded-encrypted-data",
-  "passphrase": "base64-encoded-passphrase"
+  "passphrase": "base64-encoded-passphrase",
+  "method": "gcm"
 }
 ```
+
+**Parameters:**
+- `encryptedData` (required): Base64-encoded encrypted data
+- `passphrase` (required): Base64-encoded passphrase/key
+- `method` (optional): Encryption method - "gcm" (default) or "cbc"
 
 **Success Response:**
 ```json
 {
   "success": true,
   "decrypted": "decrypted-json-string",
+  "method": "GCM",
   "timestamp": "2024-01-15T10:30:00.000Z"
 }
 ```
@@ -223,12 +232,13 @@ process.env.DEBUG = 'true';
 
 ## Integration
 
-The server integrates seamlessly with Vidnest providers:
+The server integrates seamlessly with Vidnest and Vidrock providers:
 
-- **vidnest.js**: Movies and TV shows
-- **vidnest-anime.js**: Anime content
+- **vidnest.js**: Movies and TV shows (AES-GCM encryption)
+- **vidnest-anime.js**: Anime content (AES-GCM encryption)
+- **vidrock.js**: Movies and TV shows (AES-CBC encryption)
 
-Both providers automatically use the server for decryption when running in React Native environments.
+All providers automatically use the server for decryption when running in React Native environments.
 
 ## License
 
